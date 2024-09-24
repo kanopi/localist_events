@@ -1,0 +1,13 @@
+{
+    "name": "kanopi/localist_events",
+    "description": "Creates a Drupal block of events from Localist.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Anne Bonham",
+            "homepage": "https://kanopi.com",
+            "role": "Maintainer"
+        }
+    ]
+}

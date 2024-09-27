@@ -1,0 +1,6 @@
+localist_events.localist_events_settings:
+  title: 'Localist Events Settings'
+  description: 'Site-wide settings for Localist Events.'
+  parent: system.admin_config_system
+  route_name: localist_events.localist_events_settings
+  weight: 10

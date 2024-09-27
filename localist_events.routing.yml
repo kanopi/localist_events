@@ -1,0 +1,9 @@
+localist_events.localist_events_settings:
+  path: '/admin/config/system/localist-events-settings'
+  defaults:
+    _title: 'Localist Events Settings'
+    _form: 'Drupal\localist_events\Form\LocalistEventsSettingsForm'
+  requirements:
+    _permission: 'administer localist_events settings'
+  options:
+    _admin_route: TRUE

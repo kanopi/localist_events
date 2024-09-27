@@ -1,0 +1,33 @@
+block.settings.localist_events_list:
+  type: block_settings
+  label: 'Localist Events List block'
+  mapping:
+    all_instances:
+      type: boolean
+      label: 'All instances'
+    days:
+      type: integer
+      label: Days
+    groups:
+      type: string
+      label: Groups
+    schools:
+      type: string
+      label: Schools
+    show_times:
+      type: boolean
+      label: 'Show times'
+    target_blank:
+      type: boolean
+      label: 'Open in a new window'
+    total:
+      type: integer
+      label: 'Total items'
+
+localist_events.settings:
+  type: config_object
+  label: 'Localist Events settings'
+  mapping:
+    domaim:
+      type: string
+      label: 'Domain'

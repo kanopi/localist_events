@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Localist Events module.
+ */
+
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\block\BlockInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function localist_events_theme($existing, $type, $theme, $path) {
+  return [
+    'localist_events' => [
+      'variables' => [
+        'id' => NULL,
+        'domain' => NULL,
+        'schools' => NULL,
+        'groups' => NULL,
+        'days' => NULL,
+        'total' => NULL,
+        'all_instances' => NULL,
+        'show_times' => NULL,
+        'target_blank' => NULL,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_block_access().
+ */
+function localist_events_block_access(BlockInterface $block, $operation, AccountInterface $account) {
+  if (
+    $operation == 'update'
+    && $block->getPluginId() == 'localist_events_list'
+    && $block->id() !== NULL
+  ) {
+    return AccessResult::allowedIfHasPermission($account, 'administer localist_events blocks');
+  }
+
+  return AccessResult::neutral();
+}

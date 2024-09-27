@@ -1,0 +1,4 @@
+administer localist_events settings:
+  title: 'Administer Localist Events List Settings'
+administer localist_events blocks:
+  title: 'Administer Localist Events List Blocks'

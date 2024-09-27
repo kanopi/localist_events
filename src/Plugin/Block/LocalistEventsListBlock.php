@@ -56,7 +56,7 @@ final class LocalistEventsListBlock extends BlockBase implements ContainerFactor
       'all_instances' => TRUE,
       'days' => 31,
       'groups' => NULL,
-      'schools' => 'ucsf',
+      'schools' => NULL,
       'show_times' => FALSE,
       'target_blank' => TRUE,
       'total' => 3,

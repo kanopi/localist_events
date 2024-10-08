@@ -1,0 +1,11 @@
+<div class="localist-items">
+  {% if items %}
+    <ul>
+      {% for item in items %}
+        <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{{ 'There are no events at the moment.'|t }}</p>
+  {% endif %}
+</div>

@@ -9,5 +9,8 @@
             "homepage": "https://kanopi.com",
             "role": "Maintainer"
         }
-    ]
+    ],
+    "require": {
+        "ivopetkov/html5-dom-document-php": "^2.7"
+    }
 }

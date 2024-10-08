@@ -27,6 +27,20 @@ function localist_events_theme($existing, $type, $theme, $path) {
         'target_blank' => NULL,
       ],
     ],
+    'localist_events_items' => [
+      'variables' => [
+        'items' => NULL,
+      ],
+    ],
+    'localist_events_item' => [
+      'variables' => [
+        'date' => NULL,
+        'description' => NULL,
+        'image' => NULL,
+        'link' => NULL,
+        'location' => NULL,
+      ],
+    ],
   ];
 }
 

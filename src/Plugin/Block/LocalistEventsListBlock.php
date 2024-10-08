@@ -9,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Path\CurrentPathStack;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Url;
+use Drupal\localist_events\FetchEvents;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -31,6 +32,7 @@ final class LocalistEventsListBlock extends BlockBase implements ContainerFactor
     $plugin_definition,
     private readonly ConfigFactory $configFactory,
     private readonly CurrentPathStack $currentPath,
+    private readonly FetchEvents $fetchEvents,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
   }
@@ -45,6 +47,7 @@ final class LocalistEventsListBlock extends BlockBase implements ContainerFactor
       $plugin_definition,
       $container->get('config.factory'),
       $container->get('path.current'),
+      $container->get('localist_events.fetch_events'),
     );
   }
 
@@ -125,23 +128,31 @@ final class LocalistEventsListBlock extends BlockBase implements ContainerFactor
    * {@inheritdoc}
    */
   public function build(): array {
-    $id = Html::getUniqueId($this->getPluginId());
     $domain = $this->configFactory->get('localist_events.settings')->get('domain');
+    $items = $this->fetchEvents->fetch($domain, $this->configuration);
 
     if (filter_var($domain, FILTER_VALIDATE_URL)) {
       $domain = rtrim($domain, '/');
-      $build['content'] = [
-        '#theme' => 'localist_events',
-        '#id' => $id,
-        '#domain' => $domain,
-        '#schools' => $this->configuration['schools'],
-        '#groups' => $this->configuration['groups'],
-        '#days' => $this->configuration['days'],
-        '#total' => $this->configuration['total'],
-        '#all_instances' => $this->configuration['all_instances'],
-        '#show_times' => $this->configuration['show_times'],
-        '#target_blank' => $this->configuration['target_blank'],
-      ];
+
+      if (isset($items['error'])) {
+        $build['content'] = $items['error'];
+      }
+      else {
+        $items = array_map(function ($item) {
+          return [
+            '#theme' => 'localist_events_item',
+            '#date' => $item['date'] ?? NULL,
+            '#description' => $item['description'] ?? NULL,
+            '#image' => $item['image'] ?? NULL,
+            '#link' => $item['link'] ?? NULL,
+            '#location' => $item['location'] ?? NULL,
+          ];
+        }, $items);
+        $build['content'] = [
+          '#theme' => 'localist_events_items',
+          '#items' => $items,
+        ];
+      }
     }
     else {
       $url = Url::fromRoute('localist_events.localist_events_settings');

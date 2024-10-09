@@ -8,6 +8,11 @@
             "name": "Anne Bonham",
             "homepage": "https://kanopi.com",
             "role": "Maintainer"
+        },
+        {
+            "name": "Nathan Stone",
+            "homepage": "https://kanopi.com",
+            "role": "Developer"
         }
     ],
     "require": {

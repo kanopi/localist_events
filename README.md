@@ -16,4 +16,4 @@ The Widget ID required by the Localist JavaScript Is automatically set using the
 
 ## Admin Options
 
-The module also provides an admin configuration page to set the global domain used for the widget: `/admin/config/system/localist-events-settings`
+The module also provides an admin configuration page to set the global domain and image selector used for the widget: `/admin/config/system/localist-events-settings`

@@ -115,7 +115,6 @@ final class FetchEvents {
       foreach ($doc->querySelector('ul')->getElementsByTagName('li') as $item) {
         $date = $item->querySelector('.lwn > .lwn0');
         $link = $item->querySelector('.lwn > a');
-        $image = $item->querySelector('.lwd > .lwi0 > a > img');
         $description = $item->querySelector('.lwd');
         $location = $item->querySelector('.lwl > a');
 
@@ -127,16 +126,21 @@ final class FetchEvents {
             $result_doc = new HTML5DOMDocument();
             $result_doc->loadHTML($result_request->getBody()->getContents(), HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
             $image = $result_doc->querySelector($image_selector);
+
+            if ($image->tagName != 'img') {
+              unset($image);
+            }
           }
         }
 
         $items_temp = [
-          'date' => trim($date->innerHTML),
-          'description' => trim($description->getTextContent()),
-          'image' => Markup::create($image->outerHTML),
-          'link' => Markup::create($link->outerHTML),
-          'location' => Markup::create($location->outerHTML),
+          'date' => isset($date) ? trim($date->innerHTML) : '',
+          'description' => isset($description) ? trim($description->getTextContent()) : '',
+          'image' => isset($image) ? Markup::create($image->outerHTML) : '',
+          'link' => isset($link) ? Markup::create($link->outerHTML) : '',
+          'location' => isset($location) ? Markup::create($location->outerHTML) : '',
         ];
+
         $items[] = array_filter($items_temp);
       }
     }

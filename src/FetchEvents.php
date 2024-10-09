@@ -47,13 +47,15 @@ final class FetchEvents {
    *
    * @param string $domain
    *   The domain to request.
+   * @param string $image_selector
+   *   The CSS selector for the thumbnail image.
    * @param array $config
    *   The configuration data to send to the Localist events widget.
    *
    * @return array|string
    *   The array of parsed data/HTML items or an error message.
    */
-  public function fetch(string $domain, array $config) {
+  public function fetch(string $domain, string $image_selector, array $config) {
     // Build domain from config.
     $domain = rtrim($domain, '/') . '/widget/view';
     // Build options from config values.
@@ -124,7 +126,7 @@ final class FetchEvents {
             $result_request = $this->httpClient->request('GET', $url);
             $result_doc = new HTML5DOMDocument();
             $result_doc->loadHTML($result_request->getBody()->getContents(), HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
-            $image = $result_doc->querySelector('.em-header-card_image img');
+            $image = $result_doc->querySelector($image_selector);
           }
         }
 

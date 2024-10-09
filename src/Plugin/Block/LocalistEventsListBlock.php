@@ -128,7 +128,8 @@ final class LocalistEventsListBlock extends BlockBase implements ContainerFactor
    */
   public function build(): array {
     $domain = $this->configFactory->get('localist_events.settings')->get('domain');
-    $items = $this->fetchEvents->fetch($domain, $this->configuration);
+    $image_selector = $this->configFactory->get('localist_events.settings')->get('image_selector');
+    $items = $this->fetchEvents->fetch($domain, $image_selector, $this->configuration);
 
     if (filter_var($domain, FILTER_VALIDATE_URL)) {
       $domain = rtrim($domain, '/');

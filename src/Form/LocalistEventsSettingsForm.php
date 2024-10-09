@@ -31,8 +31,14 @@ final class LocalistEventsSettingsForm extends ConfigFormBase {
     $form['domain'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Domain'),
-      '#description' => $this->t('Enter the domain for the hosted Localist widget. Do not include a trailing slash or the "/widget/view" part of the URL'),
+      '#description' => $this->t('Enter the domain for the hosted Localist widget. Do not include a trailing slash or the "/widget/view" part of the URL.'),
       '#default_value' => $this->config('localist_events.settings')->get('domain'),
+    ];
+    $form['image_selector'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Image Selector'),
+      '#description' => $this->t('The CSS selector to use for the image for each item, Usually an image found on the detail page for the given item. Be sure to include the <code>`img`</code> tag, or the class/ID directly on the tag. E.g. <code>`.some-selector img`</code> or <code>`#image-id`</code>.'),
+      '#default_value' => $this->config('localist_events.settings')->get('image_selector'),
     ];
 
     return parent::buildForm($form, $form_state);
@@ -59,7 +65,8 @@ final class LocalistEventsSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     $this->config('localist_events.settings')
-      ->set('domain', $form_state->getValue('domain'))
+      ->set('domain', rtrim($form_state->getValue('domain')))
+      ->set('image_selector', $form_state->getValue('image_selector'))
       ->save();
     parent::submitForm($form, $form_state);
   }

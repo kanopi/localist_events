@@ -93,7 +93,7 @@ final class FetchEvents {
       }
 
       // Cache the results for a day.
-      $this->cache->set($cid, $contents, time() + (60 * 60 * 24));
+      $this->cache->set($cid, $contents, strtotime('today') + (60 * 60 * 24));
     }
 
     // Capture the HTML from the JavaScript output. Splitting at the end of the
@@ -122,9 +122,25 @@ final class FetchEvents {
           $url = $link->getAttribute('href');
 
           if (filter_var($url, FILTER_VALIDATE_URL)) {
-            $result_request = $this->httpClient->request('GET', $url);
+            $cid = 'localist_events:external:' . base64_encode($url);
+
+            if ($cache = $this->cache->get($cid)) {
+              $contents = $cache->data;
+            }
+            else {
+              $result_request = $this->httpClient->request('GET', $url);
+              $contents = '';
+
+              if ($result_request->getStatusCode() == 200) {
+                $contents = $result_request->getBody()->getContents();
+              }
+
+              // Cache the results for a week.
+              $this->cache->set($cid, $contents, strtotime('today') + (60 * 60 * 24 * 7));
+            }
+
             $result_doc = new HTML5DOMDocument();
-            $result_doc->loadHTML($result_request->getBody()->getContents(), HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
+            $result_doc->loadHTML($contents, HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
             $image = $result_doc->querySelector($image_selector);
 
             if ($image->tagName != 'img') {

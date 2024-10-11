@@ -3,6 +3,7 @@
 namespace Drupal\localist_events\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Path\CurrentPathStack;
@@ -166,6 +167,21 @@ final class LocalistEventsListBlock extends BlockBase implements ContainerFactor
     }
 
     return $build;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheContexts() {
+    return Cache::mergeContexts(parent::getCacheContexts(), ['url']);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheMaxAge() {
+    // Cache for one day in seconds.
+    return (60 * 60 * 24);
   }
 
 }

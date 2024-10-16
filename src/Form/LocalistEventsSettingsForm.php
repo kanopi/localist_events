@@ -37,8 +37,14 @@ final class LocalistEventsSettingsForm extends ConfigFormBase {
     $form['image_selector'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Image Selector'),
-      '#description' => $this->t('The CSS selector to use for the image for each item, Usually an image found on the detail page for the given item. Be sure to include the <code>`img`</code> tag, or the class/ID directly on the tag. E.g. <code>`.some-selector img`</code> or <code>`#image-id`</code>.'),
+      '#description' => $this->t('The CSS selector to use for the image for each item, usually an image found on the detail page for the given item. Be sure to include the <code>`img`</code> tag, or the class/ID directly on the tag. E.g. <code>`.some-selector img`</code> or <code>`#image-id`</code>.'),
       '#default_value' => $this->config('localist_events.settings')->get('image_selector'),
+    ];
+    $form['tag_selector'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Tag Selector'),
+      '#description' => $this->t('The CSS selector to use for the tags for each item, usually a group of <code>&lt;a&gt;</code>\'s found on the detail page for the given item. Be sure to include the <code>`a`</code> tags. E.g. <code>`.some-selector > a`</code>.'),
+      '#default_value' => $this->config('localist_events.settings')->get('tag_selector'),
     ];
 
     return parent::buildForm($form, $form_state);
@@ -67,6 +73,7 @@ final class LocalistEventsSettingsForm extends ConfigFormBase {
     $this->config('localist_events.settings')
       ->set('domain', rtrim($form_state->getValue('domain')))
       ->set('image_selector', $form_state->getValue('image_selector'))
+      ->set('tag_selector', $form_state->getValue('tag_selector'))
       ->save();
     parent::submitForm($form, $form_state);
   }

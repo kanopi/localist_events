@@ -45,19 +45,17 @@ final class FetchEvents {
   /**
    * Fetches and parses the Localist events data.
    *
-   * @param string $domain
-   *   The domain to request.
-   * @param string $image_selector
-   *   The CSS selector for the thumbnail image.
    * @param array $config
    *   The configuration data to send to the Localist events widget.
    *
    * @return array|string
    *   The array of parsed data/HTML items or an error message.
    */
-  public function fetch(string $domain, string $image_selector, array $config) {
-    // Build domain from config.
-    $domain = rtrim($domain, '/') . '/widget/view';
+  public function fetch(array $config) {
+    $domain = $this->configFactory->get('localist_events.settings')->get('domain');
+    $domain = rtrim($domain, '/');
+    $image_selector = $this->configFactory->get('localist_events.settings')->get('image_selector');
+    $tag_selector = $this->configFactory->get('localist_events.settings')->get('tag_selector');
     // Build options from config values.
     $options = [
       'id' => $config['id'],
@@ -74,7 +72,7 @@ final class FetchEvents {
     $query = array_map(function ($key, $option) {
       return "$key=$option";
     }, array_keys($options), array_values($options));
-    $url = "$domain?" . implode('&', $query);
+    $url = $domain . '/widget/view?' . implode('&', $query);
     $cid = 'localist_events:' . implode(':', $options);
 
     if ($cache = $this->cache->get($cid)) {
@@ -141,10 +139,41 @@ final class FetchEvents {
 
             $result_doc = new HTML5DOMDocument();
             $result_doc->loadHTML($contents, HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
-            $image = $result_doc->querySelector($image_selector);
+            /** @var \IvoPetkov\HTML5DOMElement */
+            $image = $image_selector ? $result_doc->querySelector($image_selector) : FALSE;
+            /** @var \IvoPetkov\HTML5DOMNodeList */
+            $tags = $tag_selector ? $result_doc->querySelectorAll($tag_selector) : FALSE;
+            $tags_array = [];
 
-            if ($image->tagName != 'img') {
+            if (!$image || $image->tagName != 'img') {
               unset($image);
+            }
+
+            if (!$tags || !$tags->length) {
+              unset($tags);
+            }
+            else {
+              /** @var \IvoPetkov\HTML5DOMElement $tag */
+              foreach ($tags->getIterator() as $tag) {
+                // Skip if this tag is not a link.
+                if ($tag->tagName != 'a') {
+                  continue;
+                }
+
+                $href = $tag->getAttribute('href');
+
+                // If it is a relative link, prepend the domain.
+                if (preg_match('|^/|i', $href)) {
+                  $tag->setAttribute('href', $domain . $href);
+                }
+
+                // Mimic the target attribute from the block config.
+                if ($config['target_blank']) {
+                  $tag->setAttribute('target', '_blank');
+                }
+
+                $tags_array[] = Markup::create($tag->outerHTML);
+              }
             }
           }
         }
@@ -155,6 +184,7 @@ final class FetchEvents {
           'image' => isset($image) ? Markup::create($image->outerHTML) : '',
           'link' => isset($link) ? Markup::create($link->outerHTML) : '',
           'location' => isset($location) ? Markup::create($location->outerHTML) : '',
+          'tags' => !empty($tags_array) ? $tags_array : '',
         ];
 
         $items[] = array_filter($items_temp);

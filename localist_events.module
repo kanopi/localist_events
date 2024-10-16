@@ -39,6 +39,7 @@ function localist_events_theme($existing, $type, $theme, $path) {
         'image' => NULL,
         'link' => NULL,
         'location' => NULL,
+        'tags' => NULL,
       ],
     ],
   ];

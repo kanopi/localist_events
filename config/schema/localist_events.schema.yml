@@ -34,3 +34,6 @@ localist_events.settings:
     image_selector:
       type: string
       label: 'Image Selector'
+    tag_selector:
+      type: string
+      label: 'Tag Selector'
